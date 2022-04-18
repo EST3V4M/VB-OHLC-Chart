@@ -17,6 +17,11 @@ Public Class Chart
             entries.Clear()
             MAs.Clear()
             PictureBox1.Image = Nothing
+            range = 0
+            HScrollBar1.Maximum = entries.Count - 1
+            HScrollBar1.LargeChange = range
+            NumericUpDown1.Maximum = entries.Count
+            NumericUpDown1.Value = 0
         End If
     End Sub
 
@@ -42,14 +47,27 @@ Public Class Chart
             End Try
         Loop
         NumericUpDown1.Maximum = entries.Count
-        NumericUpDown1.Value = 20
+        If (entries.Count > 20) Then
+            MAValue2 = 20
+            NumericUpDown1.Value = 20
+        Else
+            MAValue2 = 0
+            NumericUpDown1.Value = 0
+        End If
+
         NumericUpDown2.Maximum = entries.Count
-        NumericUpDown2.Value = entries.Count
+
         Label5.Text = OpenFileDialog1.FileName.Split("/").Last.Split(".").First
         'entries = (From x In entries Select x Order By x.timeStramp Descending).ToList
 
         Dim test As Integer = PictureBox1.Width / 30
-        range = entries.Count
+        If (entries.Count > 100) Then
+            range = 100
+            NumericUpDown2.Value = 100
+        Else
+            range = entries.Count()
+            NumericUpDown2.Value = entries.Count
+        End If
         startIndex = 0
 
         HScrollBar1.Maximum = entries.Count - 1
@@ -99,6 +117,7 @@ Public Class Chart
             range += (-zoomValue / 30)
         End If
 
+
         'If HScrollBar1.Value + range > entries.Count Then
         '    HScrollBar1.Value -= (HScrollBar1.Value + range) - entries.Count
         'End If
@@ -107,7 +126,7 @@ Public Class Chart
         HScrollBar1.LargeChange = range
 
         NumericUpDown1.Value = MAValue2
-
+        NumericUpDown2.Value = range
         RenderChart()
     End Sub
     Private Sub Scroll(sender As Object, e As EventArgs) Handles HScrollBar1.Scroll
